@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .left-panel,
+        .right-panel {
+            width: 200px;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            background-color: #f9f9f9;
+            text-align: center;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .right-panel {
+            border-left: 1px solid #ddd;
+        }
+
+        .profile-summary {
+            cursor: pointer;
+        }
+
+        .profile-summary img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-summary h3 {
+            margin: 10px 0 0;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        #topNav {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: none;
+            /* Hidden by default */
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #topNav button {
+            background-color: white;
+            color: #007bff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #topNav button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        #postSection {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        #postContent {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .post {
+            position: relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .post-username {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #eee;
+        }
+
+        .like-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            background: none;
+            color: #007bff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .like-button.liked {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .like-button:hover {
+            background-color: #007bff15;
+        }
+
+        .like-button.liked:hover {
+            background-color: #0056b3;
+        }
+
+        .like-count {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .search-container {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-container input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-container button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .profile-container {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ffffff;
+            border-radius: 4px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #000000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .post-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .post-username {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .post {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .post-content {
+            margin-top: 10px;
+        }
+
+        .customize-button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .customize-button:hover {
+            background-color: #0056b3;
+        }
+
+        #customizeProfileSection {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .customize-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .customize-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save-button {
+            background-color: #28a745;
+        }
+
+        .save-button:hover {
+            background-color: #218838;
+        }
+
+        .cancel-button {
+            background-color: #dc3545;
+        }
+
+        .cancel-button:hover {
+            background-color: #c82333;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+
+        #followButton {
+            padding: 8px 16px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+        #followButton.following {
+            background-color: #178905;
+        }
+
+        #followButton:hover {
+            opacity: 0.9;
+        }
+
+        #followerCount {
+            color: #666;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        .post-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .follow-button {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .follow-button.following {
+            background-color: #178905;
+        }
+
+        .follow-button:hover {
+            opacity: 0.9;
+        }
+
+        .activity-center {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .activity-header {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .request-actions button {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .request-actions button:first-child {
+            background: #28a745;
+            color: white;
+        }
+
+        .request-actions button:last-child {
+            background: #dc3545;
+            color: white;
+        }
+
+        .no-requests {
+            color: #6c757d;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .feed-controls {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .feed-controls select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .recommendations-panel {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .recommended-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+
+        .small-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+
+        .small-follow-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .feed-filters {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-select {
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .filter-select:hover {
+            border-color: #007bff;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .no-posts {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #dc3545;
+        }
+
+        .post-tags {
+            margin: 10px 0;
+        }
+
+        .tag-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            min-height: 100px;
+        }
+
+        .tag-select option {
+            padding: 4px;
+        }
+
+        .tag-select option:checked {
+            background: #007bff linear-gradient(0deg, #007bff 0%, #007bff 100%);
+            color: white;
+        }
+
+        .post-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            margin: 2px;
+            background: #e9ecef;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #495057;
+        }
+
+        .post-tag.cybersecurity { background: #ffd8d8; }
+        .post-tag.webdev { background: #d8e8ff; }
+        .post-tag.cloud { background: #d8fff0; }
+        .post-tag.ai { background: #f0d8ff; }
+        .post-tag.devops { background: #fff3d8; }
+        .post-tag.data { background: #d8ffed; }
+        .post-tag.mobile { background: #ffd8e8; }
+        .post-tag.blockchain { background: #d8ffff; }
+        .post-tag.iot { background: #ffe8d8; }
+        .post-tag.career { background: #e8ffd8; }
+
+        .tag-container {
+            margin: 10px 0;
+        }
+
+        .tag-label {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .tag-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-box {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            background: white;
+        }
+
+        .tag-box input[type="checkbox"] {
+            display: none;
+        }
+
+        .tag-box span {
+            color: #666;
+        }
+
+        /* Selected state */
+        .tag-box input[type="checkbox"]:checked + span {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .tag-box:hover {
+            background: #f8f9fa;
+        }
+
+        /* Post tags in feed */
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .post-tag {
+            font-size: 12px;
+            color: #007bff;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .tech-news-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .news-container {
+            margin-top: 10px;
+        }
+
+        .news-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-title {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .news-source {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 10px;
+        }
+
+        /* Add source tag styles */
+        .source-tag {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .techcrunch {
+            background: #00ff00;
+            color: #333;
+        }
+
+        .the-verge {
+            background: #5900b3;
+            color: white;
+        }
+
+        .hacker-news {
+            background: #ff6600;
+            color: white;
+        }
+
+        .news-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .news-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 10px;
+            font-style: italic;
+        }
+
+        .no-results, .error {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            background: white;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        .search-section {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-button {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background: #0056b3;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .trending-repos-section {
+            margin-top: 20px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .repo-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        .repo-item:last-child {
+            border-bottom: none;
+        }
+
+        .repo-name {
+            color: #0366d6;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .repo-meta {
+            color: #666;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .page-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .no-posts, .error {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            background: white;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        .post {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .post-username {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .post-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .post-content {
+            margin-bottom: 10px;
+        }
+
+        .post-tags {
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            margin-right: 5px;
+            color: #495057;
+        }
+
+        .like-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .like-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .auth-container {
+            max-width: 400px;
+            margin: 40px auto;
+        }
+
+        .auth-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .search-container {
+            margin: 20px;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+
+        .search-container {
+            position: relative;
+            margin: 20px;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-results {
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .search-result-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .username {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .search-message {
+            padding: 10px;
+            text-align: center;
+            color: #666;
+        }
+
+        .search-message.error {
+            color: #dc3545;
+        }
+
+        .search-result-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-panel" id="leftPanel">
+            <div class="profile-summary" onclick="showUserProfile(currentUser)">
+                <img id="leftProfileImage" class="profile-avatar" alt="Profile Image">
+                <h3 id="leftProfileUsername"></h3>
+            </div>
+            <div class="nav-links">
+                <button class="nav-button" onclick="showPostFeed()">
+                    <i class="fas fa-home"></i> Home Feed
+                </button>
+            </div>
+        </div>
+        <div class="main-content" id="mainContent">
+            <nav id="topNav">
+                <span>Welcome, <span id="currentUsername"></span>!</span>
+                <button onclick="logout()">Logout</button>
+            </nav>
+
+            <div class="auth-container">
+                <div id="loginSection" class="auth-section">
+                    <h2>Login</h2>
+                    <input type="text" id="loginUsername" placeholder="Username">
+                    <input type="password" id="loginPassword" placeholder="Password">
+                    <button onclick="login()" class="auth-btn">Login</button>
+                    <p class="toggle-text">
+                        Don't have an account? 
+                        <button onclick="toggleAuth()" class="toggle-btn">Register here</button>
+                    </p>
+                </div>
+
+                <div id="registerSection" class="auth-section" style="display: none;">
+                    <h2>Register</h2>
+                    <input type="text" id="registerUsername" placeholder="Username">
+                    <input type="password" id="registerPassword" placeholder="Password">
+                    <button onclick="register()" class="auth-btn">Register</button>
+                    <p class="toggle-text">
+                        Already have an account? 
+                        <button onclick="toggleAuth()" class="toggle-btn">Login here</button>
+                    </p>
+                </div>
+            </div>
+
+            <div id="postSection">
+                <div class="search-container">
+                    <input type="text" id="user-search" placeholder="Search by username...">
+                    <button onclick="userSearch2()">Search</button>                </div>
+                <div class="create-post">
+                    <h2>Create Post</h2>
+                    <textarea id="postContent" placeholder="Share your tech insights, questions, or updates..."></textarea>
+                    
+                    <div class="tag-container">
+                        <div class="tag-label">Select tags:</div>
+                        <div class="tag-options">
+                            <label class="tag-box">
+                                <input type="checkbox" value="cybersecurity">
+                                <span>#cybersecurity</span>
+                            </label>
+                            <label class="tag-box">
+                                <input type="checkbox" value="webdev">
+                                <span>#webdev</span>
+                            </label>
+                            <label class="tag-box">
+                                <input type="checkbox" value="cloud">
+                                <span>#cloud</span>
+                            </label>
+                            <label class="tag-box">
+                                <input type="checkbox" value="ai">
+                                <span>#ai</span>
+                            </label>
+                            <label class="tag-box">
+                                <input type="checkbox" value="devops">
+                                <span>#devops</span>
+                            </label>
+                            <label class="tag-box">
+                                <input type="checkbox" value="data">
+                                <span>#data</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="createPost()" class="post-btn">Post</button>
+                </div>
+                <!-- Add Feed Filters Here -->
+                <div class="feed-controls">
+                    <div class="filter-wrapper">
+                        <label>Sort by:</label>
+                        <select id="sortSelect" class="filter-select" onchange="updateFeed()">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="mostLiked">Most Liked</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-wrapper">
+                        <label>Filter by:</label>
+                        <select id="filterSelect" class="filter-select" onchange="updateFeed()">
+                            <option value="all">All Posts</option>
+                            <option value="following">Following Only</option>
+                            <option value="liked">Posts I Liked</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-wrapper">
+                        <label>Tech Category:</label>
+                        <select id="tagFilter" class="filter-select" onchange="updateFeed()">
+                            <option value="all">All Categories</option>
+                            <option value="cybersecurity">Cybersecurity</option>
+                            <option value="webdev">Web Development</option>
+                            <option value="cloud">Cloud Computing</option>
+                            <option value="ai">AI & Machine Learning</option>
+                            <option value="devops">DevOps</option>
+                            <option value="data">Data Science</option>
+                            <option value="mobile">Mobile Development</option>
+                            <option value="blockchain">Blockchain</option>
+                            <option value="iot">IoT</option>
+                            <option value="career">Tech Career</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h2>Posts</h2>
+                <div id="postsContainer"></div>
+            </div>
+
+            <div id="message"></div>
+
+            <div id="profileSection" class="profile-container">
+                <div class="profile-header">
+                    <img id="profileImage" class="profile-image" src="" alt="Profile Image">
+                    <div class="profile-info">
+                        <h2 id="profileUsername"></h2>
+                        <button id="customizeProfileBtn" class="customize-button">Customize Profile</button>
+                    </div>
+                </div>
+                <div id="customizeProfileSection" style="display: none;">
+                    <h3>Customize Profile</h3>
+                    <input type="file" id="uploadProfileImage" accept="image/*">
+                    <button onclick="saveProfileChanges()">Save Changes</button>
+                </div>
+                <div class="profile-posts">
+                    <h3>Posts by <span id="profileUsernamePosts"></span></h3>
+                    <div id="profilePostsContainer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel" id="rightPanel">
+            <div id="activityCenter" class="activity-center">
+                <div class="activity-header">
+                    <h3>Activity Center</h3>
+                </div>
+                <div id="activityContent">
+                    <div id="friendRequests"></div>
+                </div>
+            </div>
+
+            <div class="tech-news-section">
+                <h3>Tech News</h3>
+                <div id="techNewsContainer" class="news-container">
+                    <div class="loading">Loading news...</div>
+                </div>
+            </div>
+
+            <!-- Add Trending Repos Section -->
+            <div class="trending-repos-section">
+                <h3>🔥 Trending Repos</h3>
+                <div id="trendingReposContainer" class="repos-container">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        // Define the function globally
+window.userSearch2 = function() {
+    console.log('Search function called');
+    const searchInput = document.querySelector('.search-container input');
+    const postsContainer = document.querySelector('#postsContainer');
+    
+    console.log('Elements found:', {
+        searchInput: searchInput?.value,
+        postsContainer: postsContainer ? 'Found' : 'Not found'
+    });
+
+    if (!searchInput || !postsContainer) {
+        console.error('Required elements not found');
+        return;
+    }
+
+    const searchTerm = searchInput.value.trim();
+    console.log('Searching for:', searchTerm);
+    
+    postsContainer.innerHTML = '<div>Searching...</div>';
+
+    fetch(`/M00986611/contents/search?username=${encodeURIComponent(searchTerm)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Search results:', data);
+            if (data.success && data.data && data.data.length > 0) {
+                postsContainer.innerHTML = '';
+                data.data.forEach(post => {
+                    const postDiv = document.createElement('div');
+                    postDiv.className = 'post';
+                    postDiv.innerHTML = `
+                        <div class="post-header">
+                            <span class="post-username">@${post.username}</span>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                    `;
+                    postsContainer.appendChild(postDiv);
+                });
+            } else {
+                postsContainer.innerHTML = '<div class="no-results">No posts found</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            postsContainer.innerHTML = '<div class="error">Search failed</div>';
+        });
+};
+
+        // Add this function to your script
+        document.getElementById('customizeProfileBtn').addEventListener('click', function () {
+            const customizeSection = document.getElementById('customizeProfileSection');
+            customizeSection.style.display = customizeSection.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Function to save profile changes
+        async function saveProfileChanges() {
+            const fileInput = document.getElementById('uploadProfileImage');
+            const formData = new FormData();
+
+            if (fileInput.files.length > 0) {
+                formData.append('profileImage', fileInput.files[0]);
+            }
+            formData.append('username', currentUser);
+
+            try {
+                const response = await fetch('/M00986611/updateProfile', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showMessage('Profile updated successfully', true);
+                    // Update avatars
+                    document.getElementById('leftProfileImage').src = data.data.profileImage;
+                    document.getElementById('profileImage').src = data.data.profileImage;
+                } else {
+                    showMessage(data.message || 'Failed to update profile', false);
+                }
+            } catch (error) {
+                showMessage('Error updating profile', false);
+            }
+        }
+
+        function showMessage(text, isSuccess) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = 'message ' + (isSuccess ? 'success' : 'error');
+            messageDiv.style.display = 'block';
+            setTimeout(() => messageDiv.style.display = 'none', 3000);
+        }
+
+        function showPostSection() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('postSection').style.display = 'block';
+            document.getElementById('topNav').style.display = 'flex';
+            document.getElementById('leftPanel').style.display = 'block';
+            document.getElementById('rightPanel').style.display = 'block';
+            loadPosts();
+        }
+
+        function showPostFeed() {
+            // Hide other sections
+            document.getElementById('postSection').style.display = 'block'; // Show post section
+            document.getElementById('profileSection').style.display = 'none'; // Hide profile section
+            loadPosts(); // Refresh posts
+        }
+
+        async function createPost() {
+            const content = document.getElementById('postContent').value;
+            if (!content) return;
+
+            // Get selected tags
+            const selectedTags = Array.from(document.querySelectorAll('.tag-box input[type="checkbox"]:checked'))
+                .map(checkbox => checkbox.value);
+
+            try {
+                const response = await fetch('/M00986611/content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content,
+                        tags: selectedTags,
+                        username: currentUser
+                    })
+                });
+
+                if (response.ok) {
+                    document.getElementById('postContent').value = '';
+                    // Clear tag selections
+                    document.querySelectorAll('.tag-box input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    loadPosts();
+                }
+            } catch (error) {
+                console.error('Error creating post:', error);
+            }
+        }
+
+        function getDefaultAvatar(username = '') {
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            // Set canvas size
+            canvas.width = 80;
+            canvas.height = 80;
+
+            // Draw circle background
+            context.fillStyle = '#007bff';
+            context.beginPath();
+            context.arc(40, 40, 40, 0, Math.PI * 2, true);
+            context.fill();
+
+            // Add initials
+            const initials = username
+                ? username.substring(0, 2).toUpperCase()
+                : '?';
+
+            context.fillStyle = '#FFFFFF';
+            context.font = 'bold 32px Arial';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(initials, 40, 40);
+
+            return canvas.toDataURL('image/png');
+        }
+
+        function getUserAvatar(username) {
+            // In a real application, you would fetch the user's avatar from your database
+            // For now, generate a default avatar with user's initials
+            return getDefaultAvatar(username);
+        }
+
+        async function handleLoginSuccess(username) {
+            currentUser = username;
+            const avatarUrl = getDefaultAvatar(username); // Get the default avatar
+
+            document.getElementById('currentUsername').textContent = username;
+            document.getElementById('leftProfileUsername').textContent = username;
+            document.getElementById('leftProfileImage').src = avatarUrl; // Set avatar in left navbar
+            document.getElementById('profileImage').src = avatarUrl; // Set avatar in profile section
+
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('topNav').style.display = 'flex';
+            document.getElementById('postSection').style.display = 'block';
+            document.getElementById('leftPanel').style.display = 'block';
+            document.getElementById('rightPanel').style.display = 'block';
+            loadPosts();
+            startRequestPolling(); // Start checking for new requests
+            loadTechNews();
+            loadTrendingRepos();
+            // Refresh news every minute
+            setInterval(loadTechNews, 60000); // 60 seconds
+            // Refresh repos every 5 minutes
+            setInterval(loadTrendingRepos, 300000);
+        }
+
+        async function createPostElement(post) {
+            const postElement = document.createElement('div');
+            postElement.className = 'post';
+            
+            // Get selected tags when creating post
+            const selectedTags = Array.from(document.querySelectorAll('.tag-box input[type="checkbox"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            postElement.innerHTML = `
+                <div class="post-header">
+                    <div class="post-user-info">
+                        <img src="${post.username === currentUser ? document.getElementById('leftProfileImage').src : getUserAvatar(post.username)}" 
+                             class="post-avatar" 
+                             onclick="showUserProfile('${post.username}')">
+                        <div class="post-username">@${post.username}</div>
+                        ${post.username !== currentUser ? 
+                            `<button class="follow-button" onclick="sendFriendRequest('${post.username}')">Follow</button>` 
+                            : ''}
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>${post.content}</p>
+                    ${post.tags ? `
+                        <div class="post-tags">
+                            ${post.tags.map(tag => `<span class="post-tag">#${tag}</span>`).join(' ')}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="post-footer">
+                    <small>Posted on: ${new Date(post.createdAt).toLocaleString()}</small>
+                    <div class="like-section">
+                        <button onclick="toggleLike('${post._id}')" 
+                                class="like-button ${post.likes?.includes(currentUser) ? 'liked' : ''}">
+                            ${post.likes?.includes(currentUser) ? '❤️ Liked' : ' Like'}
+                        </button>
+                        <span class="like-count">${post.likes?.length || 0} ${post.likes?.length === 1 ? 'like' : 'likes'}</span>
+                    </div>
+                </div>
+            `;
+            
+            return postElement;
+        }
+
+        // Add pagination controls and logic
+        const POSTS_PER_PAGE = 5; // Number of posts per page
+        let currentPage = 1;
+
+        // Update loadPosts function with proper error handling
+        async function loadPosts() {
+            console.log('loadPosts called');
+            try {
+                const response = await fetch(`/M00986611/contents?page=${currentPage}&limit=${POSTS_PER_PAGE}`);
+                const data = await response.json();
+                console.log('Received data:', data);
+
+                const postsContainer = document.getElementById('postsContainer');
+                
+                // Remove existing pagination
+                const existingPagination = document.querySelector('.pagination');
+                if (existingPagination) {
+                    existingPagination.remove();
+                }
+
+                // Clear container
+                postsContainer.innerHTML = '';
+
+                // Check if data.data is an array (the posts array)
+                if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+                    console.log(`Creating ${data.data.length} posts`);
+                    
+                    // Create posts
+                    for (const post of data.data) {
+                        const postElement = await createPostElement(post);
+                        postsContainer.appendChild(postElement);
+                    }
+
+                    // Add pagination
+                    const totalPages = Math.ceil(data.data.length / POSTS_PER_PAGE);
+                    const paginationHtml = `
+                        <div class="pagination">
+                            <button 
+                                onclick="changePage(${currentPage - 1})" 
+                                class="page-btn"
+                                ${currentPage === 1 ? 'disabled' : ''}>
+                                Previous
+                            </button>
+                            <span class="page-info">Page ${currentPage} of ${totalPages}</span>
+                            <button 
+                                onclick="changePage(${currentPage + 1})" 
+                                class="page-btn"
+                                ${currentPage >= totalPages ? 'disabled' : ''}>
+                                Next
+                            </button>
+                        </div>
+                    `;
+                    postsContainer.insertAdjacentHTML('afterend', paginationHtml);
+                } else {
+                    console.log('No posts found in data:', data);
+                    postsContainer.innerHTML = '<div class="no-posts">No posts available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                const postsContainer = document.getElementById('postsContainer');
+                postsContainer.innerHTML = '<div class="error">Error loading posts</div>';
+            }
+        }
+
+        // Add page change function
+        async function changePage(newPage) {
+            if (newPage < 1) return;
+            currentPage = newPage;
+            await loadPosts();
+            window.scrollTo(0, 0); // Scroll to top when changing pages
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/M00986611/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('regUsername').value,
+                        password: document.getElementById('regPassword').value
+                    })
+                });
+                const data = await response.json();
+                showMessage(data.message, data.success);
+            } catch (error) {
+                showMessage('Registration failed', false);
+            }
+        });
+
+
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('topNav').style.display = 'none';
+            document.getElementById('postSection').style.display = 'none';
+            document.getElementById('leftPanel').style.display = 'none';
+            document.getElementById('rightPanel').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'none'; // Hide profile section
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+        }
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+
+                const response = await fetch('/M00986611/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showMessage('Login successful', true);
+                    handleLoginSuccess(username);
+                } else {
+                    showMessage(data.message || 'Login failed', false);
+                }
+            } catch (error) {
+                showMessage('Login failed', false);
+            }
+        });
+
+        async function toggleLike(postId) {
+            if (!currentUser) {
+                showMessage('Please login to like posts', false);
+                return;
+            }
+
+            try {
+                const response = await fetch(`/M00986611/contents/${postId}/like`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: currentUser })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    loadPosts();
+                } else {
+                    showMessage(data.message || 'Failed to update like', false);
+                }
+            } catch (error) {
+                showMessage('Error updating like', false);
+            }
+        }
+
+        async function showUserProfile(username) {
+            document.getElementById('postSection').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'block';
+
+            // Update profile header
+            document.getElementById('profileUsername').textContent = username;
+            document.getElementById('profileUsernamePosts').textContent = username;
+            document.getElementById('profileImage').src = username === currentUser ?
+                document.getElementById('leftProfileImage').src :
+                getUserAvatar(username);
+
+            // Show/hide customize button based on current user
+            const customizeButton = document.querySelector('.customize-button');
+            if (customizeButton) {
+                customizeButton.style.display = username === currentUser ? 'block' : 'none';
+            }
+
+            // Add follow button if not viewing own profile
+            const profileInfo = document.querySelector('.profile-info');
+            if (username !== currentUser) {
+                // Get follow status
+                const response = await fetch(`/M00986611/follow/${username}?currentUser=${currentUser}`);
+                const data = await response.json();
+
+                // Update or create follow button
+                let followBtn = document.getElementById('followButton');
+                if (!followBtn) {
+                    followBtn = document.createElement('button');
+                    followBtn.id = 'followButton';
+                    followBtn.onclick = () => toggleFollow(username);
+                    profileInfo.appendChild(followBtn);
+                }
+                followBtn.textContent = data.isFollowing ? 'Unfollow' : 'Follow';
+                followBtn.classList.toggle('following', data.isFollowing);
+
+                // Add follower count
+                let followerCount = document.getElementById('followerCount');
+                if (!followerCount) {
+                    followerCount = document.createElement('div');
+                    followerCount.id = 'followerCount';
+                    profileInfo.appendChild(followerCount);
+                }
+                followerCount.textContent = `${data.followers} ${data.followers === 1 ? 'follower' : 'followers'}`;
+            } else {
+                // Remove follow button and count if viewing own profile
+                const followBtn = document.getElementById('followButton');
+                const followerCount = document.getElementById('followerCount');
+                if (followBtn) followBtn.remove();
+                if (followerCount) followerCount.remove();
+            }
+
+            loadUserPosts(username);
+        }
+
+        async function loadUserPosts(username) {
+            try {
+                const response = await fetch(`/M00986611/contents/search?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+
+                const profilePostsContainer = document.getElementById('profilePostsContainer');
+                profilePostsContainer.innerHTML = '';
+
+                if (!data.success || data.data.length === 0) {
+                    profilePostsContainer.innerHTML = '<div class="no-results">No posts found for this user</div>';
+                    return;
+                }
+
+                data.data.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post';
+                    const date = new Date(post.createdAt).toLocaleString();
+
+                    postElement.innerHTML = `
+                        <p>${post.content}</p>
+                        <small>Posted on: ${date}</small>
+                    `;
+
+                    profilePostsContainer.appendChild(postElement);
+                });
+            } catch (error) {
+                console.error('Error loading user posts:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadPosts();
+        });
+
+        // Add this function to handle follow/unfollow
+        async function toggleFollow(username) {
+            if (!currentUser) {
+                showMessage('Please login to follow users', false);
+                return;
+            }
+
+            try {
+                const response = await fetch(`/M00986611/follow/${username}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ follower: currentUser })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    const followBtn = document.getElementById('followButton');
+                    followBtn.textContent = data.isFollowing ? 'Unfollow' : 'Follow';
+                    followBtn.classList.toggle('following', data.isFollowing);
+
+                    const followerCount = document.getElementById('followerCount');
+                    if (followerCount) {
+                        followerCount.textContent = `${data.followers} ${data.followers === 1 ? 'follower' : 'followers'}`;
+                    }
+                }
+            } catch (error) {
+                showMessage('Error updating follow status', false);
+            }
+        }
+
+        async function sendFriendRequest(targetUsername) {
+            try {
+                const response = await fetch(`/M00986611/friend-request/${targetUsername}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ requester: currentUser })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showMessage('Friend request sent', true);
+                    loadActivityCenter(); // Refresh activity center
+                } else {
+                    showMessage('Failed to send friend request', false);
+                }
+            } catch (error) {
+                showMessage('Error sending friend request', false);
+            }
+        }
+
+        async function loadActivityCenter() {
+            const requestsDiv = document.getElementById('friendRequests');
+            try {
+                const response = await fetch(`/M00986611/friend-requests?username=${currentUser}`);
+                const data = await response.json();
+
+                let html = '';
+                if (data.requests?.length > 0) {
+                    html = data.requests.map(request => {
+                        let statusHtml = '';
+                        switch (request.status) {
+                            case 'pending':
+                                statusHtml = `
+                                    <div class="request-actions">
+                                        <button onclick="handleFriendRequest('${request.requester}', true)">✓</button>
+                                        <button onclick="handleFriendRequest('${request.requester}', false)">✗</button>
+                                    </div>`;
+                                break;
+                            case 'accepted':
+                                statusHtml = '<span class="status accepted">Accepted</span>';
+                                break;
+                            case 'declined':
+                                statusHtml = '<span class="status declined">Declined</span>';
+                                break;
+                        }
+
+                        return `
+                            <div class="request-item ${request.status}">
+                                <div class="request-info">
+                                    <span>@${request.requester} wants to connect</span>
+                                    <small>${new Date(request.timestamp).toLocaleString()}</small>
+                                </div>
+                                ${statusHtml}
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    html = '<p class="no-requests">No requests</p>';
+                }
+                requestsDiv.innerHTML = html;
+            } catch (error) {
+                requestsDiv.innerHTML = '<p class="error">Error loading requests</p>';
+            }
+        }
+
+        async function handleFriendRequest(requester, accept) {
+            const endpoint = accept ? 'accept-friend' : 'decline-friend';
+            await fetch(`/M00986611/${endpoint}/${currentUser}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ requester })
+            });
+            loadActivityCenter();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadActivityCenter);
+
+        // Add this function to periodically check for new requests
+        function startRequestPolling() {
+            setInterval(async () => {
+                if (currentUser) {
+                    try {
+                        const response = await fetch(`/M00986611/friend-requests?username=${currentUser}`);
+                        const data = await response.json();
+
+                        const requestsDiv = document.getElementById('friendRequests');
+                        if (requestsDiv && data.requests?.length > 0) {
+                            requestsDiv.innerHTML = data.requests.map(request => `
+                                <div class="request-item ${request.status}">
+                                    <div class="request-info">
+                                        <span>@${request.requester} wants to connect</span>
+                                        <small>${new Date(request.timestamp).toLocaleString()}</small>
+                                    </div>
+                                    ${request.status === 'pending' ? `
+                                        <div class="request-actions">
+                                            <button onclick="handleFriendRequest('${request.requester}', true)">✓</button>
+                                            <button onclick="handleFriendRequest('${request.requester}', false)">✗</button>
+                                        </div>
+                                    ` : `
+                                        <span class="status ${request.status}">${request.status}</span>
+                                    `}
+                                </div>
+                            `).join('');
+                        } else if (requestsDiv) {
+                            requestsDiv.innerHTML = '<p class="no-requests">No new requests</p>';
+                        }
+                    } catch (error) {
+                        console.error('Error checking requests:', error);
+                    }
+                }
+            }, 2000); // Check every 2 seconds
+        }
+
+        // Add this above your posts container
+        function addFeedControls() {
+            const controlsHtml = `
+                <div class="feed-controls">
+                    <div class="sort-controls">
+                        <select id="sortSelect" onchange="updateFeed()">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="mostLiked">Most Liked</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-controls">
+                        <select id="filterSelect" onchange="updateFeed()">
+                            <option value="all">All Posts</option>
+                            <option value="following">Following Only</option>
+                            <option value="liked">Posts I Liked</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="recommendations-panel">
+                    <h3>Recommended Users</h3>
+                    <div id="recommendedUsers"></div>
+                </div>
+            `;
+
+            const feedSection = document.getElementById('postsContainer').parentElement;
+            feedSection.insertAdjacentHTML('beforebegin', controlsHtml);
+        }
+
+        // Update the feed update function
+        async function updateFeed() {
+            try {
+                const sortBy = document.getElementById('sortSelect').value;
+                const filterBy = document.getElementById('filterSelect').value;
+
+                // Show loading state
+                const postsContainer = document.getElementById('postsContainer');
+                postsContainer.innerHTML = '<div class="loading">Loading posts...</div>';
+
+                // Fetch posts with sort and filter parameters
+                const response = await fetch(`/M00986611/contents?sort=${sortBy}&filter=${filterBy}&currentUser=${currentUser}`);
+                if (!response.ok) throw new Error('Failed to fetch posts');
+
+                const data = await response.json();
+
+                // Clear container
+                postsContainer.innerHTML = '';
+
+                if (data.success && data.data) {
+                    // Create and append posts one by one
+                    for (const post of data.data) {
+                        const postElement = await createPostElement(post);
+                        if (postElement) {
+                            postsContainer.appendChild(postElement);
+                        }
+                    }
+
+                    if (data.data.length === 0) {
+                        postsContainer.innerHTML = '<div class="no-posts">No posts found</div>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating feed:', error);
+                const postsContainer = document.getElementById('postsContainer');
+                postsContainer.innerHTML = '<div class="error">Error loading posts</div>';
+            }
+        }
+
+        // Add recommendation logic
+        async function loadRecommendations() {
+            try {
+                const response = await fetch(`/M00986611/recommendations?user=${currentUser}`);
+                const data = await response.json();
+
+                const recommendationsDiv = document.getElementById('recommendedUsers');
+                if (data.recommendations?.length > 0) {
+                    recommendationsDiv.innerHTML = data.recommendations.map(user => `
+                        <div class="recommended-user">
+                            <img src="${getUserAvatar(user)}" class="small-avatar">
+                            <span>@${user}</span>
+                            <button onclick="sendFriendRequest('${user}')" class="small-follow-btn">Follow</button>
+                        </div>
+                    `).join('');
+                } else {
+                    recommendationsDiv.innerHTML = '<p>No recommendations available</p>';
+                }
+            } catch (error) {
+                console.error('Error loading recommendations:', error);
+            }
+        }
+
+        async function loadTechNews() {
+            const newsContainer = document.getElementById('techNewsContainer');
+            newsContainer.innerHTML = '<div class="loading">Updating news...</div>';
+            
+            try {
+                const response = await fetch('/M00986611/tech-news');
+                const data = await response.json();
+                
+                if (data.success && data.news.length > 0) {
+                    newsContainer.innerHTML = data.news.map(item => `
+                        <div class="news-item">
+                            <a href="${item.link}" class="news-title" target="_blank">
+                                ${item.title}
+                            </a>
+                            <div class="news-source">
+                                <span class="source-tag ${item.source.toLowerCase().replace(' ', '-')}">
+                                    ${item.source}
+                                </span>
+                                • ${new Date(item.date).toLocaleTimeString()}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    newsContainer.innerHTML = '<div class="no-news">No news available</div>';
+                }
+            } catch (error) {
+                newsContainer.innerHTML = '<div class="error">Error loading news</div>';
+            }
+        }
+
+        // Add function to load trending repos
+        async function loadTrendingRepos() {
+            const reposContainer = document.getElementById('trendingReposContainer');
+            
+            try {
+                const response = await fetch('/M00986611/trending-repos');
+                const data = await response.json();
+                
+                if (data.success && data.repos.length > 0) {
+                    reposContainer.innerHTML = data.repos
+                        .slice(0, 5) // Show only top 5 repos
+                        .map(repo => `
+                            <div class="repo-item">
+                                <a href="${repo.link}" class="repo-name" target="_blank">
+                                    ${repo.name.split('/')[1] || repo.name}
+                                </a>
+                                <div class="repo-meta">
+                                    ${repo.language ? `${repo.language} • ` : ''}⭐ ${repo.stars}
+                                </div>
+                            </div>
+                        `).join('');
+                } else {
+                    reposContainer.innerHTML = '<div class="no-repos">No trending repos</div>';
+                }
+            } catch (error) {
+                console.error('Error loading repos:', error);
+                reposContainer.innerHTML = '<div class="error">Error loading repos</div>';
+            }
+        }
+
+        // Make sure DOM is loaded before adding listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners for buttons
+            document.querySelector('.toggle-btn')?.addEventListener('click', toggleAuth);
+            document.querySelector('.auth-btn')?.addEventListener('click', handleAuth);
+        });
+
+        // Toggle between login and register
+        function toggleAuth() {
+            const registerSection = document.getElementById('registerSection');
+            const loginSection = document.getElementById('loginSection');
+            
+            if (registerSection.style.display === 'none') {
+                registerSection.style.display = 'block';
+                loginSection.style.display = 'none';
+            } else {
+                registerSection.style.display = 'none';
+                loginSection.style.display = 'block';
+            }
+        }
+
+        // Handle login
+        async function login() {
+            try {
+                const usernameInput = document.getElementById('loginUsername');
+                const passwordInput = document.getElementById('loginPassword');
+
+                if (!usernameInput || !passwordInput) {
+                    throw new Error('Login form elements not found');
+                }
+
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                if (!username || !password) {
+                    alert('Please enter both username and password');
+                    return;
+                }
+
+                const response = await fetch('/M00986611/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (typeof handleLoginSuccess === 'function') {
+                        handleLoginSuccess(username);
+                    } else {
+                        console.log('Login successful:', username);
+                    }
+                } else {
+                    alert(data.message || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Error during login. Please try again.');
+            }
+        }
+
+        // Handle register
+        async function register() {
+            try {
+                const usernameInput = document.getElementById('registerUsername');
+                const passwordInput = document.getElementById('registerPassword');
+
+                if (!usernameInput || !passwordInput) {
+                    throw new Error('Register form elements not found');
+                }
+
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                if (!username || !password) {
+                    alert('Please enter both username and password');
+                    return;
+                }
+
+                const response = await fetch('/M00986611/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Registration successful! Please login.');
+                    toggleAuth();
+                    // Clear registration form
+                    usernameInput.value = '';
+                    passwordInput.value = '';
+                } else {
+                    alert(data.message || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Error during registration. Please try again.');
+            }
+        }
+
+        // Update onclick handlers in HTML to use these functions
+        document.querySelectorAll('.auth-btn').forEach(btn => {
+            btn.onclick = function() {
+                const isLogin = this.closest('#loginSection') !== null;
+                if (isLogin) {
+                    login();
+                } else {
+                    register();
+                }
+            };
+        });
+
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize UI elements
+            initializeUI();
+        });
+
+        function initializeUI() {
+            try {
+                // Add event listeners for auth buttons
+                const loginBtn = document.querySelector('#loginSection .auth-btn');
+                const registerBtn = document.querySelector('#registerSection .auth-btn');
+                const toggleBtns = document.querySelectorAll('.toggle-btn');
+
+                if (loginBtn) loginBtn.addEventListener('click', login);
+                if (registerBtn) registerBtn.addEventListener('click', register);
+                toggleBtns.forEach(btn => btn.addEventListener('click', toggleAuth));
+
+            } catch (error) {
+                console.error('Error initializing UI:', error);
+            }
+        }
+
+        // Toggle auth sections
+        function toggleAuth(e) {
+            e?.preventDefault(); // Prevent default if event exists
+            try {
+                const registerSection = document.getElementById('registerSection');
+                const loginSection = document.getElementById('loginSection');
+
+                if (!registerSection || !loginSection) {
+                    console.error('Auth sections not found');
+                    return;
+                }
+
+                if (registerSection.style.display === 'none') {
+                    registerSection.style.display = 'block';
+                    loginSection.style.display = 'none';
+                } else {
+                    registerSection.style.display = 'none';
+                    loginSection.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error toggling auth:', error);
+            }
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html></html>
